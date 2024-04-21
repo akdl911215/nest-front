@@ -1,6 +1,6 @@
 import React, { FormEvent, useState } from "react";
 import { SignupParams } from "../api/UserApi";
-import Modal from "../../components/Modal";
+import LoginModal from "./LoginModal";
 import { HandleChangeType } from "../../_common/HandleChangeType";
 
 const Signup = () => {
@@ -22,8 +22,8 @@ const Signup = () => {
 
   return (
     <>
-      <button>Sign Up</button>
-      <Modal
+      <button onClick={() => setModalOpen(true)}>Sign Up</button>
+      <LoginModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         buttonLabel={"Sign Up"}
@@ -184,7 +184,7 @@ const Signup = () => {
           </div>
           {/*<button type="submit">Log In</button>*/}
         </form>
-      </Modal>
+      </LoginModal>
     </>
   );
 };

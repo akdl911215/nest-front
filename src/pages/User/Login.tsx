@@ -1,11 +1,18 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import Modal from "../../components/Modal";
+import LoginModal from "./LoginModal";
 import { LoginAPI, LoginParams } from "../api/UserApi";
 import { HandleChangeType } from "../../_common/HandleChangeType";
+import Signup from "./Signup";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { loginModalState } from "../../reducers/loginModalStateSlice";
 
 const Login = () => {
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
-
+  // const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const { isModalOpen } = useSelector(
+    (state: RootState) => state.loginModalState,
+  );
+  const dispatch = useDispatch();
   const [login, setLogin] = useState<LoginParams>({
     email: "",
     password: "",
@@ -27,18 +34,21 @@ const Login = () => {
       .then((res): void => {
         const response = res.data.response;
 
-        if (res.status === 201 && response) setModalOpen(false);
+        if (res.status === 201 && response)
+          dispatch(loginModalState({ isModalOpen: false }));
       })
       .catch((err) => console.error(err));
   };
 
   return (
     <>
-      <button onClick={() => setModalOpen(true)}>Log In</button>
-      <Modal
+      <button onClick={() => dispatch(loginModalState({ isModalOpen: true }))}>
+        Log In
+      </button>
+      <LoginModal
         buttonLabel={"Log In"}
         isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => dispatch(loginModalState({ isModalOpen: false }))}
         onSubmit={handleSubmit}
       >
         <div
@@ -198,19 +208,12 @@ const Login = () => {
                 Forgot password?
               </a>
             </div>
-            <div style={{ width: "100%", padding: "10px 0" }}>
-              {/*<a href="/sign-up">Sign Up</a>*/}
-              <button
-                onClick={() => setModalOpen(true)}
-                style={{ fontSize: "20px" }}
-              >
-                Sign up
-              </button>
-            </div>
-            {/*<button type="submit">Log In</button>*/}
           </form>
+          <div style={{ width: "100%", padding: "10px 0" }}>
+            <Signup />
+          </div>
         </div>
-      </Modal>
+      </LoginModal>
     </>
   );
 };
