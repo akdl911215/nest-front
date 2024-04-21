@@ -7,13 +7,7 @@ interface Props {
   readonly buttonLabel: string;
   readonly onSubmit: () => void;
 }
-const LoginModal = ({
-  children,
-  isOpen,
-  onClose,
-  buttonLabel,
-  onSubmit,
-}: Props) => {
+const Modal = ({ children, isOpen, onClose, buttonLabel, onSubmit }: Props) => {
   if (!isOpen) return null;
 
   return (
@@ -103,4 +97,4 @@ const LoginModal = ({
   );
 };
 
-export default LoginModal;
+export default Modal;

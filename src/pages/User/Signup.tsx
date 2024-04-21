@@ -1,10 +1,20 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { SignupParams } from "../api/UserApi";
-import LoginModal from "./LoginModal";
+import Modal from "./modal";
 import { HandleChangeType } from "../../_common/HandleChangeType";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { signupModalState } from "../../reducers/signupModalStateSlice";
+import { loginModalState } from "../../reducers/loginModalStateSlice";
+import { modalState } from "../../reducers/modalSlice";
 
 const Signup = () => {
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  // const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const { status, isModalOpen } = useSelector(
+    (state: RootState) => state.modalState,
+  );
+  const dispatch = useDispatch();
+
   const [signup, setSignup] = useState<SignupParams>({
     email: "",
     nickname: "",
@@ -20,12 +30,24 @@ const Signup = () => {
     if (event) event.preventDefault();
   };
 
+  // useEffect(() => {
+  //   dispatch(loginModalState({ isModalOpen: false }));
+  // }, []);
+
   return (
     <>
-      <button onClick={() => setModalOpen(true)}>Sign Up</button>
-      <LoginModal
+      <button
+        onClick={() => {
+          dispatch(modalState({ status: "signup", isModalOpen: true }));
+        }}
+      >
+        Sign Up
+      </button>
+      <Modal
         isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          dispatch(modalState({ status: "login", isModalOpen: false }));
+        }}
         buttonLabel={"Sign Up"}
         onSubmit={handleSubmit}
       >
@@ -184,7 +206,7 @@ const Signup = () => {
           </div>
           {/*<button type="submit">Log In</button>*/}
         </form>
-      </LoginModal>
+      </Modal>
     </>
   );
 };

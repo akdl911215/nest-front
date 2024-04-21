@@ -1,18 +1,21 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import LoginModal from "./LoginModal";
+import Modal from "./modal";
 import { LoginAPI, LoginParams } from "../api/UserApi";
 import { HandleChangeType } from "../../_common/HandleChangeType";
 import Signup from "./Signup";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { loginModalState } from "../../reducers/loginModalStateSlice";
+import { signupModalState } from "../../reducers/signupModalStateSlice";
+import { modalState } from "../../reducers/modalSlice";
 
 const Login = () => {
   // const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const { isModalOpen } = useSelector(
-    (state: RootState) => state.loginModalState,
+  const { status, isModalOpen } = useSelector(
+    (state: RootState) => state.modalState,
   );
   const dispatch = useDispatch();
+
   const [login, setLogin] = useState<LoginParams>({
     email: "",
     password: "",
@@ -35,31 +38,32 @@ const Login = () => {
         const response = res.data.response;
 
         if (res.status === 201 && response)
-          dispatch(loginModalState({ isModalOpen: false }));
+          dispatch(modalState({ status: "login", isModalOpen: false }));
       })
       .catch((err) => console.error(err));
   };
 
   return (
     <>
-      <button onClick={() => dispatch(loginModalState({ isModalOpen: true }))}>
+      <button
+        onClick={() => {
+          dispatch(modalState({ status: "login", isModalOpen: true }));
+        }}
+      >
         Log In
       </button>
-      <LoginModal
-        buttonLabel={"Log In"}
+      <Modal
+        buttonLabel={status === "login" ? "Log in" : ""}
         isOpen={isModalOpen}
-        onClose={() => dispatch(loginModalState({ isModalOpen: false }))}
+        onClose={() =>
+          dispatch(modalState({ status: "login", isModalOpen: false }))
+        }
         onSubmit={handleSubmit}
       >
         <div
           style={{
             width: "70%",
             height: "100%",
-            // margin: "auto",
-            // border: "1px solid #ccc",
-            // padding: "20px",
-            // boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-            // borderRadius: "4px",
           }}
         >
           <h2 style={{ textAlign: "center" }}>Login</h2>
@@ -213,7 +217,7 @@ const Login = () => {
             <Signup />
           </div>
         </div>
-      </LoginModal>
+      </Modal>
     </>
   );
 };
