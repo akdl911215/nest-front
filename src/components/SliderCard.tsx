@@ -1,33 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/img/panda_logo.png";
+import {
+  BoardProps,
+  ReactionStateTypes,
+  ReactionType,
+} from "../_common/CollectionTypes";
 import {
   ReactionAPI,
   ReactionCountAPI,
   ReactionListAPI,
   ReactionParams,
 } from "../pages/api/ReactionApi";
-import { ReactionStateTypes } from "../_common/CollectionTypes";
+import logo from "../assets/img/panda_logo.png";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-interface Props {
-  readonly id: string;
-  readonly category: string;
-  readonly content: string;
-  readonly nickname: string;
-  readonly title: string;
-  readonly createdAt: Date;
-}
-
-export interface ReactionType {
-  readonly id: string;
-  readonly boardI_id: string;
-  readonly type: ReactionStateTypes;
-  readonly user_id: string;
-  readonly created_at: Date;
-  readonly updated_at: Date;
-}
-
-const Card = ({ id, category, content, createdAt, nickname, title }: Props) => {
+const SliderCard = ({
+  id,
+  category,
+  content,
+  createdAt,
+  nickname,
+  title,
+}: BoardProps) => {
   const navigate = useNavigate();
   const [isCardCount, setIsCardCount] = useState<number>(0);
   const [isCardHovered, setIsCardHovered] = useState<boolean>(false);
@@ -155,17 +151,37 @@ const Card = ({ id, category, content, createdAt, nickname, title }: Props) => {
             {title}
           </h3>
 
-          <p
-            style={{
-              textAlign: "left",
-              whiteSpace: "normal",
-              wordBreak: "break-word",
-              width: "100%",
-              fontSize: "20px",
+          {/*<p*/}
+          {/*  style={{*/}
+          {/*    textAlign: "left",*/}
+          {/*    whiteSpace: "normal",*/}
+          {/*    wordBreak: "break-word",*/}
+          {/*    width: "100%",*/}
+          {/*    fontSize: "20px",*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  {content.map((co, index) => co)}*/}
+          {/*</p>*/}
+          <Slider
+            {...{
+              dots: true,
+              infinite: content.length > 1,
+              speed: 500,
+              slidesToShow: 1,
+              slidesToScroll: 1,
+              arrows: true,
             }}
           >
-            {content}
-          </p>
+            {content.map((image, index) => (
+              <div key={index}>
+                <img
+                  src={image}
+                  alt={`Preview image ${index}`}
+                  style={{ height: "400px", width: "400px" }}
+                />
+              </div>
+            ))}
+          </Slider>
         </div>
       </div>
       <div
@@ -312,5 +328,4 @@ const Card = ({ id, category, content, createdAt, nickname, title }: Props) => {
     </>
   );
 };
-
-export default Card;
+export default SliderCard;

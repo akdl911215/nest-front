@@ -12,5 +12,5 @@ const rootReducer = combineReducers({
   signupModalState: signupModalStateReducer,
   modalState: modalStateReducer,
 });
-
+export type RootState = ReturnType<typeof rootReducer>;
 export default rootReducer;

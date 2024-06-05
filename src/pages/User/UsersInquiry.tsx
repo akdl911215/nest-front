@@ -4,7 +4,7 @@ import GlobalSideBar from "../Global/GlobalSideBar";
 import Card from "../../components/Card";
 import { useSearchParams } from "react-router-dom";
 import { UsersInquiryAPI } from "../api/UserApi";
-import { ReactionStateTypes } from "../../_common/CollectionTypes";
+import { CardType, ReactionStateTypes } from "../../_common/CollectionTypes";
 
 interface ContainerProps {
   children?: React.ReactNode;
@@ -16,11 +16,11 @@ const MainContainer = ({ children }: ContainerProps) => {
       style={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center", // This centers the cards horizontally
-        justifyContent: "flex-start", // This aligns the cards to the top
-        paddingTop: "20px", // Add space at the top
-        height: "100vh", // Use the full height of the viewport
-        width: "100vw", // Use the full width of the viewport
+        alignItems: "center",
+        justifyContent: "flex-start",
+        paddingTop: "20px",
+        height: "100vh",
+        width: "80vw",
       }}
     >
       {children}
@@ -35,48 +35,15 @@ const CardsContainer = ({ children }: ContainerProps) => {
       style={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center", // This centers the cards horizontally
-        width: "100%", // Full width of its parent
-        maxWidth: "600px", // Maximum width of the cards container
+        alignItems: "center",
+        width: "100%",
+        maxWidth: "600px",
       }}
     >
       {children}
     </div>
   );
 };
-
-interface CardType {
-  readonly id: string;
-  readonly identifier_id: string;
-  readonly category: string;
-  readonly content: string;
-  readonly title: string;
-  readonly nickname: string;
-  readonly created_at: Date;
-  readonly updated_at: Date;
-  readonly deleted_at?: Date | null;
-
-  readonly reactions: {
-    id: string;
-    type: ReactionStateTypes;
-    user_id: string;
-    board_id: string;
-    created_at: Date;
-    updated_at: Date;
-    board: null | {
-      id: string;
-      identifier_id: string;
-      title: string;
-      content: string;
-      category: string;
-      nickname: string;
-      board_score: number;
-      created_at: Date;
-      updated_at: Date;
-      deleted_at: null | Date;
-    };
-  }[];
-}
 
 const UsersInquiry = () => {
   const [params, setParams] = useSearchParams();
@@ -88,7 +55,7 @@ const UsersInquiry = () => {
       take: 10,
     })
       .then((res) => {
-        const status = res.data.status;
+        const status = res.status;
 
         if (status === 200) {
           const response = res.data.response?.current_list;
@@ -96,7 +63,7 @@ const UsersInquiry = () => {
           setList(response);
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("UsersInquiryAPI err : ", err));
   }, [params]);
 
   return (
@@ -117,6 +84,7 @@ const UsersInquiry = () => {
                       nickname={el.nickname}
                       createdAt={el.created_at}
                       content={el.content}
+                      type={el.type}
                     />
                   </>
                 );

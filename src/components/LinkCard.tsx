@@ -1,33 +1,39 @@
 import React, { useEffect, useState } from "react";
+import {
+  BoardProps,
+  ReactionStateTypes,
+  ReactionType,
+} from "../_common/CollectionTypes";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/img/panda_logo.png";
 import {
   ReactionAPI,
   ReactionCountAPI,
   ReactionListAPI,
   ReactionParams,
 } from "../pages/api/ReactionApi";
-import { ReactionStateTypes } from "../_common/CollectionTypes";
+import logo from "../assets/img/panda_logo.png";
+import YouTube from "react-youtube";
 
-interface Props {
-  readonly id: string;
-  readonly category: string;
-  readonly content: string;
-  readonly nickname: string;
-  readonly title: string;
-  readonly createdAt: Date;
-}
+const getYouTubeVideoId = ({ url }: { readonly url: string }): string => {
+  try {
+    const urlObj: URL = new URL(url);
 
-export interface ReactionType {
-  readonly id: string;
-  readonly boardI_id: string;
-  readonly type: ReactionStateTypes;
-  readonly user_id: string;
-  readonly created_at: Date;
-  readonly updated_at: Date;
-}
+    console.log("urlObj : ", urlObj);
+    return urlObj.searchParams.get("v") || "";
+  } catch (e) {
+    console.error("Invalid URL", e);
+    return "";
+  }
+};
 
-const Card = ({ id, category, content, createdAt, nickname, title }: Props) => {
+const LinkCard = ({
+  id,
+  category,
+  content,
+  createdAt,
+  nickname,
+  title,
+}: BoardProps) => {
   const navigate = useNavigate();
   const [isCardCount, setIsCardCount] = useState<number>(0);
   const [isCardHovered, setIsCardHovered] = useState<boolean>(false);
@@ -155,17 +161,21 @@ const Card = ({ id, category, content, createdAt, nickname, title }: Props) => {
             {title}
           </h3>
 
-          <p
-            style={{
-              textAlign: "left",
-              whiteSpace: "normal",
-              wordBreak: "break-word",
-              width: "100%",
-              fontSize: "20px",
-            }}
-          >
-            {content}
-          </p>
+          {/*<p*/}
+          {/*  style={{*/}
+          {/*    textAlign: "left",*/}
+          {/*    whiteSpace: "normal",*/}
+          {/*    wordBreak: "break-word",*/}
+          {/*    width: "100%",*/}
+          {/*    fontSize: "20px",*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*</p>*/}
+          {content.map((video: string) => (
+            <div key={id}>
+              {video && <YouTube videoId={getYouTubeVideoId({ url: video })} />}
+            </div>
+          ))}
         </div>
       </div>
       <div
@@ -313,4 +323,4 @@ const Card = ({ id, category, content, createdAt, nickname, title }: Props) => {
   );
 };
 
-export default Card;
+export default LinkCard;

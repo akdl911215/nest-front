@@ -6,11 +6,18 @@ export interface GetPresignedUrlParams {
 }
 
 export const getPresignedUrlAPI = async (params: GetPresignedUrlParams) => {
-  const URL: string = "s3/presigned-url";
+  try {
+    const URL: string = "s3/presigned-url";
+    console.log("URL : ", URL);
 
-  const res = await client.post(URL, params);
+    const res = await client.post(URL, params);
+    console.log("getPresignedUrlAPI res : ", res);
 
-  return res;
+    return res;
+  } catch (e: any) {
+    console.error("getPresignedUrlAPI error : ", e);
+    throw new Error(`${e}`);
+  }
 };
 
 export interface AWSImageDeleteParams {
@@ -48,6 +55,8 @@ export const AWSImageRegistAPI = async ({
   file,
 }: AWSImageRegistParams) => {
   const URL: string = url;
+  console.log("URL : ", URL);
+  console.log("file : ", file);
 
   try {
     const res = await fetch(URL, {
@@ -58,6 +67,7 @@ export const AWSImageRegistAPI = async ({
       },
       body: file,
     });
+    console.log("res : ", res);
 
     return res;
   } catch (e: any) {
